@@ -1,8 +1,17 @@
 import secrets
 import string
 
-def generar_contrasena(longitud, caracteres_prohibidos=None):
-    caracteres_posibles = string.ascii_letters + string.digits + string.punctuation
+def generar_contrasena(longitud, incluir_mayusculas, incluir_minusculas, incluir_numeros, incluir_simbolos, caracteres_prohibidos=None):
+    caracteres_posibles = ""
+    
+    if incluir_mayusculas:
+        caracteres_posibles += string.ascii_uppercase
+    if incluir_minusculas:
+        caracteres_posibles += string.ascii_lowercase
+    if incluir_numeros:
+        caracteres_posibles += string.digits
+    if incluir_simbolos:
+        caracteres_posibles += string.punctuation
     
     if caracteres_prohibidos:
         for caracter in caracteres_prohibidos:
@@ -27,6 +36,12 @@ def main():
         except ValueError:
             print("Ingrese un número entero válido")
     
+    # Pedir opciones de inclusión de caracteres
+    incluir_mayusculas = input("¿Incluir mayúsculas? (s/n): ").lower() == 's'
+    incluir_minusculas = input("¿Incluir minúsculas? (s/n): ").lower() == 's'
+    incluir_numeros = input("¿Incluir números? (s/n): ").lower() == 's'
+    incluir_simbolos = input("¿Incluir símbolos? (s/n): ").lower() == 's'
+    
     caracteres_prohibidos = input("Ingrese los caracteres que no debe incluir la contraseña (opcional): ")
     if caracteres_prohibidos:
         caracteres_prohibidos = list(caracteres_prohibidos)
@@ -34,7 +49,7 @@ def main():
         caracteres_prohibidos = None
     
     try:
-        contrasena = generar_contrasena(longitud, caracteres_prohibidos)
+        contrasena = generar_contrasena(longitud, incluir_mayusculas, incluir_minusculas, incluir_numeros, incluir_simbolos, caracteres_prohibidos)
         print("Contraseña generada:", contrasena)
     except ValueError as e:
         print("Error:", e)
