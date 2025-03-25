@@ -1,0 +1,45 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  cursor: pointer;
+  background-color: yellow;
+  color: black;
+  border: none;
+}
+
+button:hover {
+  background-color: #ffcc00;
+}
+
+#candado {
+  font-size: 5em;
+  color: yellow;
+  margin: 20px 0;
+}
+
+#container {
+  text-align: center;
+}
