@@ -23,6 +23,38 @@ def generar_contrasena(longitud, incluir_mayusculas, incluir_minusculas, incluir
     contrasena = ''.join(secrets.choice(caracteres_posibles) for _ in range(longitud))
     return contrasena
 
+def calcular_fuerza(contrasena):
+    """Calcula la fuerza de una contraseña basada en su longitud y diversidad de caracteres"""
+    longitud = len(contrasena)
+    tipos_caracteres = 0
+    
+    if any(c.isupper() for c in contrasena):
+        tipos_caracteres += 1
+    if any(c.islower() for c in contrasena):
+        tipos_caracteres += 1
+    if any(c.isdigit() for c in contrasena):
+        tipos_caracteres += 1
+    if any(c in string.punctuation for c in contrasena):
+        tipos_caracteres += 1
+    
+    return longitud * tipos_caracteres
+
+def guardar_contrasena(contrasena, archivo="contraseñas.txt"):
+    """Guarda la contraseña generada en un archivo"""
+    with open(archivo, 'a') as f:
+        f.write(f"{contrasena}\n")
+    print(f"Contraseña guardada en {archivo}")
+
+def mostrar_estadisticas(contrasena):
+    """Muestra estadísticas sobre la contraseña generada"""
+    print("\nEstadísticas de la contraseña:")
+    print(f"Longitud: {len(contrasena)} caracteres")
+    print(f"Mayúsculas: {sum(1 for c in contrasena if c.isupper())}")
+    print(f"Minúsculas: {sum(1 for c in contrasena if c.islower())}")
+    print(f"Números: {sum(1 for c in contrasena if c.isdigit())}")
+    print(f"Símbolos: {sum(1 for c in contrasena if c in string.punctuation)}")
+    print(f"Fuerza estimada: {calcular_fuerza(contrasena)}")
+
 def main():
     print("Generador de contraseñas seguras")
     
@@ -50,7 +82,16 @@ def main():
     
     try:
         contrasena = generar_contrasena(longitud, incluir_mayusculas, incluir_minusculas, incluir_numeros, incluir_simbolos, caracteres_prohibidos)
-        print("Contraseña generada:", contrasena)
+        print("\nContraseña generada:", contrasena)
+        
+        # Mostrar estadísticas
+        mostrar_estadisticas(contrasena)
+        
+        # Opción para guardar la contraseña
+        guardar = input("\n¿Desea guardar esta contraseña? (s/n): ").lower() == 's'
+        if guardar:
+            guardar_contrasena(contrasena)
+            
     except ValueError as e:
         print("Error:", e)
 
