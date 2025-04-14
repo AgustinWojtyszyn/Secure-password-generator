@@ -5,126 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Contraseñas Seguras</title>
     <style>
-        body {
-            background-color: black;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        :root {
+            --bg-color: #000;
+            --text-color: #fff;
+            --primary: #ff0;
+            --primary-hover: #ffcc00;
+            --card-bg: rgba(0, 0, 0, 0.7);
+            --input-bg: #222;
+            --border-color: #ff0;
+            --shadow: 0 0 20px rgba(255, 255, 0, 0.3);
+            --strength-weak: #ff0000;
+            --strength-medium: #ff9900;
+            --strength-strong: #ffff00;
+            --strength-very-strong: #00ff00;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
         }
 
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            color: yellow;
-            text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        input, select, button {
-            padding: 10px;
-            margin: 5px;
-            font-size: 1em;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #222;
-            color: white;
-        }
-
-        button {
-            cursor: pointer;
-            background-color: yellow;
-            color: black;
-            border: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #ffcc00;
-            transform: scale(1.05);
+        #container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
         }
 
         #candado {
             font-size: 5em;
-            color: yellow;
-            margin: 20px 0;
+            color: var(--primary);
             text-shadow: 0 0 15px rgba(255, 255, 0, 0.7);
+            margin: 20px 0;
             animation: pulse 2s infinite;
         }
 
-        #container {
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid yellow;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 1em;
+            border: 1px solid #444;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         #password-display {
             font-size: 1.5em;
             margin: 20px 0;
             padding: 15px;
-            background-color: #111;
-            border: 1px solid yellow;
+            background: #111;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
+            min-height: 80px;
             word-break: break-all;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #password-display:hover {
+            background: #1a1a1a;
         }
 
         .checkbox-group {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
+            justify-content: space-between;
             margin: 15px 0;
         }
 
         .checkbox-option {
-            margin: 0 15px;
+            width: 48%;
+            margin: 5px 0;
             display: flex;
             align-items: center;
         }
 
+        .checkbox-option input {
+            width: auto;
+            margin-right: 10px;
+        }
+
         .strength-meter {
-            width: 100%;
             height: 10px;
-            background-color: #333;
+            background: #333;
             border-radius: 5px;
-            margin-top: 10px;
+            margin: 20px 0;
             overflow: hidden;
         }
 
-        .strength-bar {
+        #strength-bar {
             height: 100%;
             width: 0%;
-            transition: width 0.5s ease, background-color 0.5s ease;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            transition: all 0.5s ease;
         }
 
         .stats {
             display: none;
-            margin-top: 20px;
             text-align: left;
-            background-color: rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
             padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid var(--border-color);
             border-radius: 5px;
-            border-left: 3px solid yellow;
         }
 
         .stats.show {
             display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .stats h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .stats p {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            #container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .checkbox-option {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -135,25 +213,25 @@
         
         <div class="form-group">
             <label for="length">Longitud (8-64):</label>
-            <input type="number" id="length" min="8" max="64" value="12">
+            <input type="number" id="length" min="8" max="64" value="16">
         </div>
         
         <div class="checkbox-group">
             <div class="checkbox-option">
                 <input type="checkbox" id="uppercase" checked>
-                <label for="uppercase">Mayúsculas</label>
+                <label for="uppercase">Mayúsculas (A-Z)</label>
             </div>
             <div class="checkbox-option">
                 <input type="checkbox" id="lowercase" checked>
-                <label for="lowercase">Minúsculas</label>
+                <label for="lowercase">Minúsculas (a-z)</label>
             </div>
             <div class="checkbox-option">
                 <input type="checkbox" id="numbers" checked>
-                <label for="numbers">Números</label>
+                <label for="numbers">Números (0-9)</label>
             </div>
             <div class="checkbox-option">
                 <input type="checkbox" id="symbols" checked>
-                <label for="symbols">Símbolos</label>
+                <label for="symbols">Símbolos (!@#...)</label>
             </div>
         </div>
         
@@ -163,140 +241,214 @@
         </div>
         
         <button id="generate-btn">Generar Contraseña</button>
-        <button id="copy-btn">Copiar</button>
+        <button id="copy-btn" disabled>Copiar</button>
         
         <div id="password-display">Tu contraseña aparecerá aquí</div>
         
         <div class="strength-meter">
-            <div class="strength-bar" id="strength-bar"></div>
+            <div id="strength-bar"></div>
         </div>
         
         <div class="stats" id="stats">
             <h3>Estadísticas:</h3>
-            <p>Longitud: <span id="length-stat">0</span> caracteres</p>
+            <p>Longitud: <span id="length-stat">0</span></p>
             <p>Mayúsculas: <span id="uppercase-stat">0</span></p>
             <p>Minúsculas: <span id="lowercase-stat">0</span></p>
             <p>Números: <span id="numbers-stat">0</span></p>
             <p>Símbolos: <span id="symbols-stat">0</span></p>
-            <p>Fuerza: <span id="strength-stat">0</span></p>
+            <p>Entropía: <span id="entropy-stat">0</span> bits</p>
         </div>
     </div>
 
     <script>
-        document.getElementById('generate-btn').addEventListener('click', function() {
-            const length = parseInt(document.getElementById('length').value);
-            const includeUppercase = document.getElementById('uppercase').checked;
-            const includeLowercase = document.getElementById('lowercase').checked;
-            const includeNumbers = document.getElementById('numbers').checked;
-            const includeSymbols = document.getElementById('symbols').checked;
-            const excludeChars = document.getElementById('exclude').value;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos del DOM
+            const elements = {
+                length: document.getElementById('length'),
+                uppercase: document.getElementById('uppercase'),
+                lowercase: document.getElementById('lowercase'),
+                numbers: document.getElementById('numbers'),
+                symbols: document.getElementById('symbols'),
+                exclude: document.getElementById('exclude'),
+                generateBtn: document.getElementById('generate-btn'),
+                copyBtn: document.getElementById('copy-btn'),
+                passwordDisplay: document.getElementById('password-display'),
+                strengthBar: document.getElementById('strength-bar'),
+                stats: document.getElementById('stats'),
+                statElements: {
+                    length: document.getElementById('length-stat'),
+                    uppercase: document.getElementById('uppercase-stat'),
+                    lowercase: document.getElementById('lowercase-stat'),
+                    numbers: document.getElementById('numbers-stat'),
+                    symbols: document.getElementById('symbols-stat'),
+                    entropy: document.getElementById('entropy-stat')
+                }
+            };
+
+            // Conjuntos de caracteres
+            const charSets = {
+                uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lowercase: 'abcdefghijklmnopqrstuvwxyz',
+                numbers: '0123456789',
+                symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+
+            // Event listeners
+            elements.generateBtn.addEventListener('click', generatePassword);
+            elements.copyBtn.addEventListener('click', copyPassword);
+            elements.passwordDisplay.addEventListener('click', copyPassword);
             
-            const password = generatePassword(length, includeUppercase, includeLowercase, 
-                                             includeNumbers, includeSymbols, excludeChars);
-            
-            document.getElementById('password-display').textContent = password;
-            updateStats(password);
-            updateStrengthMeter(password);
-        });
-        
-        document.getElementById('copy-btn').addEventListener('click', function() {
-            const password = document.getElementById('password-display').textContent;
-            if (password && password !== "Tu contraseña aparecerá aquí") {
-                navigator.clipboard.writeText(password);
-                alert("Contraseña copiada al portapapeles");
+            // Validar entradas cuando cambian
+            [elements.length, elements.uppercase, elements.lowercase, 
+             elements.numbers, elements.symbols, elements.exclude].forEach(el => {
+                el.addEventListener('input', validateInputs);
+            });
+
+            function validateInputs() {
+                // Validar longitud
+                const length = parseInt(elements.length.value);
+                if (length < 8 || length > 64) {
+                    elements.generateBtn.disabled = true;
+                    return false;
+                }
+
+                // Validar que al menos un tipo de caracter esté seleccionado
+                if (!elements.uppercase.checked && !elements.lowercase.checked && 
+                    !elements.numbers.checked && !elements.symbols.checked) {
+                    elements.generateBtn.disabled = true;
+                    return false;
+                }
+
+                elements.generateBtn.disabled = false;
+                return true;
             }
-        });
-        
-        function generatePassword(length, includeUppercase, includeLowercase, includeNumbers, includeSymbols, excludeChars) {
-            let charset = "";
-            
-            if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            if (includeLowercase) charset += "abcdefghijklmnopqrstuvwxyz";
-            if (includeNumbers) charset += "0123456789";
-            if (includeSymbols) charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
-            
-            if (excludeChars) {
-                for (let char of excludeChars) {
-                    charset = charset.replace(char, '');
+
+            function generatePassword() {
+                if (!validateInputs()) return;
+
+                const length = parseInt(elements.length.value);
+                const options = {
+                    uppercase: elements.uppercase.checked,
+                    lowercase: elements.lowercase.checked,
+                    numbers: elements.numbers.checked,
+                    symbols: elements.symbols.checked,
+                    exclude: elements.exclude.value
+                };
+
+                try {
+                    const password = createPassword(length, options);
+                    elements.passwordDisplay.textContent = password;
+                    elements.copyBtn.disabled = false;
+                    updateStats(password);
+                    updateStrengthMeter(password);
+                } catch (error) {
+                    elements.passwordDisplay.textContent = error.message;
+                    elements.copyBtn.disabled = true;
+                    elements.stats.classList.remove('show');
                 }
             }
-            
-            if (charset.length === 0) {
-                return "Selecciona al menos un tipo de caracter";
+
+            function createPassword(length, { uppercase, lowercase, numbers, symbols, exclude }) {
+                let charset = '';
+                
+                if (uppercase) charset += charSets.uppercase;
+                if (lowercase) charset += charSets.lowercase;
+                if (numbers) charset += charSets.numbers;
+                if (symbols) charset += charSets.symbols;
+                
+                if (!charset) {
+                    throw new Error('Selecciona al menos un tipo de caracter');
+                }
+
+                // Filtrar caracteres excluidos
+                if (exclude) {
+                    const excludeRegex = new RegExp(`[${exclude.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]`, 'g');
+                    charset = charset.replace(excludeRegex, '');
+                    
+                    if (!charset) {
+                        throw new Error('Los caracteres excluidos eliminan todos los caracteres disponibles');
+                    }
+                }
+                
+                // Generar contraseña criptográficamente segura
+                const passwordArray = new Uint32Array(length);
+                window.crypto.getRandomValues(passwordArray);
+                
+                return Array.from(passwordArray)
+                    .map(num => charset[num % charset.length])
+                    .join('');
             }
-            
-            let password = "";
-            const cryptoArray = new Uint32Array(length);
-            window.crypto.getRandomValues(cryptoArray);
-            
-            for (let i = 0; i < length; i++) {
-                password += charset[cryptoArray[i] % charset.length];
+
+            function copyPassword() {
+                const password = elements.passwordDisplay.textContent;
+                if (!password || password === "Tu contraseña aparecerá aquí") return;
+                
+                navigator.clipboard.writeText(password)
+                    .then(() => {
+                        // Feedback visual
+                        elements.copyBtn.textContent = '¡Copiado!';
+                        setTimeout(() => {
+                            elements.copyBtn.textContent = 'Copiar';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Error al copiar:', err);
+                    });
             }
-            
-            return password;
-        }
-        
-        function updateStats(password) {
-            if (password === "Tu contraseña aparecerá aquí" || password === "Selecciona al menos un tipo de caracter") {
-                document.getElementById('stats').classList.remove('show');
-                return;
+
+            function updateStats(password) {
+                const stats = {
+                    length: password.length,
+                    uppercase: (password.match(/[A-Z]/g) || []).length,
+                    lowercase: (password.match(/[a-z]/g) || []).length,
+                    numbers: (password.match(/[0-9]/g) || []).length,
+                    symbols: (password.match(/[^A-Za-z0-9]/g) || []).length,
+                    entropy: calculateEntropy(password)
+                };
+
+                // Actualizar DOM
+                for (const [key, value] of Object.entries(stats)) {
+                    if (elements.statElements[key]) {
+                        elements.statElements[key].textContent = value;
+                    }
+                }
+
+                elements.stats.classList.add('show');
             }
-            
-            document.getElementById('length-stat').textContent = password.length;
-            document.getElementById('uppercase-stat').textContent = (password.match(/[A-Z]/g) || []).length;
-            document.getElementById('lowercase-stat').textContent = (password.match(/[a-z]/g) || []).length;
-            document.getElementById('numbers-stat').textContent = (password.match(/[0-9]/g) || []).length;
-            document.getElementById('symbols-stat').textContent = (password.match(/[^A-Za-z0-9]/g) || []).length;
-            
-            const strength = calculateStrength(password);
-            document.getElementById('strength-stat').textContent = strength;
-            
-            document.getElementById('stats').classList.add('show');
-        }
-        
-        function calculateStrength(password) {
-            let strength = 0;
-            const length = password.length;
-            
-            // Bonus por longitud
-            strength += length * 2;
-            
-            // Bonus por diversidad de caracteres
-            const hasUppercase = /[A-Z]/.test(password);
-            const hasLowercase = /[a-z]/.test(password);
-            const hasNumbers = /[0-9]/.test(password);
-            const hasSymbols = /[^A-Za-z0-9]/.test(password);
-            
-            const charTypes = [hasUppercase, hasLowercase, hasNumbers, hasSymbols].filter(Boolean).length;
-            strength += charTypes * 10;
-            
-            return strength;
-        }
-        
-        function updateStrengthMeter(password) {
-            if (password === "Tu contraseña aparecerá aquí" || password === "Selecciona al menos un tipo de caracter") {
-                document.getElementById('strength-bar').style.width = '0%';
-                document.getElementById('strength-bar').style.backgroundColor = '#333';
-                return;
+
+            function calculateEntropy(password) {
+                let charsetSize = 0;
+                if (/[A-Z]/.test(password)) charsetSize += 26;
+                if (/[a-z]/.test(password)) charsetSize += 26;
+                if (/[0-9]/.test(password)) charsetSize += 10;
+                if (/[^A-Za-z0-9]/.test(password)) charsetSize += 20; // Aprox. símbolos comunes
+                
+                return Math.round(password.length * Math.log2(charsetSize));
             }
-            
-            const strength = calculateStrength(password);
-            let width = Math.min(100, strength);
-            let color;
-            
-            if (strength < 30) {
-                color = '#ff0000'; // Rojo
-            } else if (strength < 60) {
-                color = '#ff9900'; // Naranja
-            } else if (strength < 90) {
-                color = '#ffff00'; // Amarillo
-            } else {
-                color = '#00ff00'; // Verde
+
+            function updateStrengthMeter(password) {
+                const entropy = calculateEntropy(password);
+                let strength = 0;
+                let color = '';
+
+                if (entropy < 40) {
+                    strength = 25;
+                    color = 'var(--strength-weak)';
+                } else if (entropy < 70) {
+                    strength = 50;
+                    color = 'var(--strength-medium)';
+                } else if (entropy < 100) {
+                    strength = 75;
+                    color = 'var(--strength-strong)';
+                } else {
+                    strength = 100;
+                    color = 'var(--strength-very-strong)';
+                }
+
+                elements.strengthBar.style.width = `${strength}%`;
+                elements.strengthBar.style.backgroundColor = color;
             }
-            
-            document.getElementById('strength-bar').style.width = `${width}%`;
-            document.getElementById('strength-bar').style.backgroundColor = color;
-        }
+        });
     </script>
 </body>
 </html>
